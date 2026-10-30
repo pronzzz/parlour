@@ -96,7 +96,7 @@ npm run check      # typecheck, tests, build
 
 1. Create a project, enable **Authentication → Anonymous** and create a **Firestore** database.
 2. Put your web config in [`src/lib/net.ts`](src/lib/net.ts) and your project ID in `.firebaserc`.
-3. `firebase deploy --only firestore` publishes the security rules and a TTL policy that deletes tables a week after their last move.
+3. `firebase deploy --only firestore` publishes the security rules. Every table carries an `expireAt` a week after its last move; on the Blaze plan you can turn on a [TTL policy](https://firebase.google.com/docs/firestore/ttl) for `tables.expireAt` to clear idle tables automatically.
 
 ## Deploying
 

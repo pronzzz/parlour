@@ -86,7 +86,7 @@ export default function OnlineTable({ code }: { code: string }) {
     };
   }, [code, seat, phase.kind]);
 
-  if (phase.kind === 'missing') return <Notice title="No table here." body={`Nobody has opened a table with the code ${code}. It may have been cleared after a week without moves.`} />;
+  if (phase.kind === 'missing') return <Notice title="No table here." body={`Nobody has opened a table with the code ${code}.`} />;
   if (phase.kind === 'error')
     return <Notice title="Couldn't reach the table." body="Check your connection and try again. If it keeps happening, the table may be closed." detail={phase.message} />;
   if (!table || !loaded || loaded.id !== table.game) return <Loading />;

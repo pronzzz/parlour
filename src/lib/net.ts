@@ -30,7 +30,7 @@ const newCode = () =>
   Array.from(crypto.getRandomValues(new Uint8Array(5)), (b) => ALPHABET[b % ALPHABET.length]).join('');
 
 const ref = (code: string) => doc(db, 'tables', code);
-/** Tables are deleted by a Firestore TTL policy a week after the last move. */
+/** `expireAt` lets a Firestore TTL policy clear idle tables (TTL needs the Blaze plan to switch on). */
 const stamp = () => ({ updatedAt: serverTimestamp(), expireAt: Timestamp.fromMillis(Date.now() + 7 * 864e5) });
 
 let userPromise: Promise<User> | null = null;
