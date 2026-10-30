@@ -1,16 +1,34 @@
 <!doctype html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <link rel="icon" type="image/png" href="/favicon.png" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Global Arcade</title>
-</head>
-
-<body>
-  <div id="root"></div>
-  <script type="module" src="/src/main.jsx"></script>
-</body>
-
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Parlour — board games for two, over a link</title>
+    <meta name="description" content="Six classic board games for two players. Pick one, send the link, play in real time. No accounts, no downloads, no ads." />
+    <meta name="theme-color" content="#f4f3ee" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0f1311" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.png" type="image/png" sizes="64x64" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Parlour" />
+    <meta property="og:title" content="Parlour — board games for two, over a link" />
+    <meta property="og:description" content="Pick a game, send the link, play. Chess, Reversi, Four in a Row, Dots & Boxes and more." />
+    <meta property="og:image" content="https://playparlour.vercel.app/og.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script>
+      // Set the theme before first paint so there's no flash.
+      try {
+        var t = localStorage.getItem('parlour:theme');
+        if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        document.documentElement.dataset.theme = t;
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>Parlour needs JavaScript to deal the cards.</noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>

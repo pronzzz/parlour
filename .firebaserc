@@ -1,5 +1,13 @@
 {
   "projects": {
     "default": "global-arcade-app"
+  },
+  "targets": {
+    "global-arcade-app": {
+      "hosting": {
+        "app": ["playparlour"],
+        "legacy": ["global-arcade-app"]
+      }
+    }
   }
 }

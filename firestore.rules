@@ -1,0 +1,47 @@
+rules_version = '2';
+
+// Parlour tables. Anyone signed in (anonymously) can open a table by its code;
+// only the two seated players can change it, and the second seat can only be
+// taken once.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /tables/{code} {
+      function signedIn() {
+        return request.auth != null;
+      }
+
+      function wellFormed(d) {
+        return d.game in ['noughts', 'four', 'dots', 'reversi', 'chess', 'snakes']
+          && d.state is string && d.state.size() < 20000
+          && d.seats is list && d.seats.size() == 2
+          && d.score is list && d.score.size() == 3
+          && d.v is int;
+      }
+
+      allow get: if signedIn();
+      allow list: if false;
+
+      allow create: if signedIn()
+        && code.matches('^[A-HJ-NP-Z2-9]{5}$')
+        && wellFormed(request.resource.data)
+        && request.resource.data.seats[0] == request.auth.uid
+        && request.resource.data.seats[1] == null
+        && request.resource.data.v == 0;
+
+      allow update: if signedIn() && wellFormed(request.resource.data) && (
+        // A seated player: anything but the seats and the creation time.
+        (request.auth.uid in resource.data.seats
+          && request.resource.data.seats == resource.data.seats
+          && request.resource.data.createdAt == resource.data.createdAt)
+        ||
+        // Someone new taking the empty second seat, and nothing else.
+        (resource.data.seats[1] == null
+          && resource.data.seats[0] != request.auth.uid
+          && request.resource.data.seats == [resource.data.seats[0], request.auth.uid]
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['seats', 'updatedAt']))
+      );
+
+      allow delete: if false;
+    }
+  }
+}
