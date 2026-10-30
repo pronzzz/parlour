@@ -101,7 +101,7 @@ npm run check      # typecheck, tests, build
 ## Deploying
 
 - **Vercel** builds from `main` automatically ([`vercel.json`](vercel.json) handles routing and caching).
-- **Firebase Hosting**: `npm run deploy:firebase` builds and deploys to the `playparlour` site and updates the Firestore rules. The old `global-arcade-app.web.app` address redirects to the new one.
+- **Firebase Hosting** deploys from `main` too, through [GitHub Actions](.github/workflows/ci.yml): every push is typechecked, tested and built, then shipped to the `playparlour` site. The old `global-arcade-app.web.app` address redirects to the new one. Firestore rules deploy by hand with `npm run deploy:firebase`.
 
 ## History
 

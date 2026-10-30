@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+
+  firebase:
+    # Vercel deploys itself from GitHub; this job ships the same build to Firebase Hosting
+    # (playparlour.web.app, plus the global-arcade-app.web.app redirect).
+    needs: check
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    env:
+      SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_GLOBAL_ARCADE_APP }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - name: Authenticate
+        run: |
+          printf '%s' "$SERVICE_ACCOUNT" > "$RUNNER_TEMP/sa.json"
+          echo "GOOGLE_APPLICATION_CREDENTIALS=$RUNNER_TEMP/sa.json" >> "$GITHUB_ENV"
+      - name: Deploy to Firebase Hosting
+        run: npx -y firebase-tools@15 deploy --only hosting --project global-arcade-app --non-interactive
